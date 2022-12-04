@@ -4,6 +4,7 @@ use std::collections::HashSet;
 trait Priority {
     fn priority(&self) -> u32;
 }
+
 impl Priority for char {
     fn priority(&self) -> u32 {
         let v = *self as u32;
