@@ -15,48 +15,30 @@ impl Priority<&char> for char {
     }
 }
 
-struct Rucksack {
-    set: HashSet<char>,
-    compartments: [HashSet<char>; 2],
-}
-impl Rucksack {
-    fn from(line: &str) -> Self {
-        let (a, b) = line.split_at(line.len() / 2);
-        let set = HashSet::from_iter(line.chars());
-
-        Rucksack {
-            set,
-            compartments: [
-                HashSet::from_iter(a.chars()),
-                HashSet::from_iter(b.chars()),
-            ],
-        }
-    }
-
-    fn item(&self) -> char {
-        let intersection = &self.compartments[0] & &self.compartments[1];
-        *intersection.iter().next().unwrap()
-    }
+fn get_item(hs1: &HashSet<char>, hs2: &HashSet<char>) -> char {
+    *(hs1 & hs2).iter().next().unwrap()
 }
 
 pub fn part_one(input: &str) -> Option<u32> {
     let mut total = 0;
-    for line in input.split('\n') {
-        let r = Rucksack::from(line);
-        total += r.item().priority();
+    for line in input.lines() {
+        let (a, b) = line.split_at(line.len() / 2);
+        let hs1: HashSet<char> = HashSet::from_iter(a.chars());
+        let hs2: HashSet<char> = HashSet::from_iter(b.chars());
+        total += get_item(&hs1, &hs2).priority();
     }
     Some(total)
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
     let mut total = 0;
-    let mut l = input.split('\n');
+    let mut l = input.lines();
     while let (Some(a), Some(b), Some(c)) = (l.next(), l.next(), l.next()) {
-        let r1 = Rucksack::from(a);
-        let r2 = Rucksack::from(b);
-        let r3 = Rucksack::from(c);
+        let r1: HashSet<char> = HashSet::from_iter(a.chars());
+        let r2: HashSet<char> = HashSet::from_iter(b.chars());
+        let r3: HashSet<char> = HashSet::from_iter(c.chars());
 
-        let intersection = &(&r1.set & &r2.set) & &r3.set;
+        let intersection = &(&r1 & &r2) & &r3;
         let letter = intersection.iter().next().unwrap();
         total += letter.priority();
     }

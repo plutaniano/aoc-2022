@@ -1,10 +1,10 @@
 use std::cmp;
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let mut max: u32 = 0;
+    let mut max = 0;
     for elf in input.split("\n\n") {
         let mut calories = 0;
-        for snack in elf.split('\n') {
+        for snack in elf.lines() {
             calories += snack.parse::<u32>().unwrap();
         }
         max = cmp::max(calories, max);
@@ -15,15 +15,11 @@ pub fn part_one(input: &str) -> Option<u32> {
 pub fn part_two(input: &str) -> Option<u32> {
     let mut elfs: Vec<u32> = vec![];
     for elf in input.split("\n\n") {
-        let mut calories = 0;
-        for snack in elf.split('\n') {
-            calories += snack.parse::<u32>().unwrap();
-        }
+        let calories = elf.lines().map(|i| i.parse::<u32>().unwrap()).sum();
         elfs.push(calories);
     }
     elfs.sort();
-    let sum = elfs.iter().rev().take(3).sum();
-    Some(sum)
+    Some(elfs.iter().rev().take(3).sum())
 }
 
 fn main() {

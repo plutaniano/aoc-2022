@@ -121,7 +121,7 @@ pub fn part_one(input: &str) -> Option<u32> {
 
 pub fn part_two(input: &str) -> Option<u32> {
     let mut score: u32 = 0;
-    for line in input.split('\n') {
+    for line in input.lines() {
         let (opponent_play, outcome) = Game::as_outcome(line);
         let my_play = opponent_play.play_to(&outcome);
         score += my_play.score();
