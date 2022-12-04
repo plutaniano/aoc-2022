@@ -1,10 +1,10 @@
 use core::panic;
 use std::collections::HashSet;
 
-trait Priority<T> {
+trait Priority {
     fn priority(&self) -> u32;
 }
-impl Priority<&char> for char {
+impl Priority for char {
     fn priority(&self) -> u32 {
         let v = *self as u32;
         match v {
