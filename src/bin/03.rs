@@ -1,4 +1,5 @@
 use core::panic;
+use std::collections::HashSet;
 
 trait Priority<T> {
     fn priority(&self) -> u32;
@@ -15,25 +16,26 @@ impl Priority<&char> for char {
 }
 
 struct Rucksack {
-    compartments: [String; 2],
+    set: HashSet<char>,
+    compartments: [HashSet<char>; 2],
 }
 impl Rucksack {
     fn from(line: &str) -> Self {
         let (a, b) = line.split_at(line.len() / 2);
+        let set = HashSet::from_iter(line.chars());
+
         Rucksack {
-            compartments: [String::from(a), String::from(b)],
+            set,
+            compartments: [
+                HashSet::from_iter(a.chars()),
+                HashSet::from_iter(b.chars()),
+            ],
         }
     }
 
     fn item(&self) -> char {
-        for item1 in self.compartments[0].chars() {
-            for item2 in self.compartments[1].chars() {
-                if item1 == item2 {
-                    return item1;
-                }
-            }
-        }
-        panic!("dajaiod");
+        let intersection = &self.compartments[0] & &self.compartments[1];
+        *intersection.iter().next().unwrap()
     }
 }
 
@@ -47,7 +49,18 @@ pub fn part_one(input: &str) -> Option<u32> {
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    Some(1)
+    let mut total = 0;
+    let mut l = input.split('\n');
+    while let (Some(a), Some(b), Some(c)) = (l.next(), l.next(), l.next()) {
+        let r1 = Rucksack::from(a);
+        let r2 = Rucksack::from(b);
+        let r3 = Rucksack::from(c);
+
+        let intersection = &(&r1.set & &r2.set) & &r3.set;
+        let letter = intersection.iter().next().unwrap();
+        total += letter.priority();
+    }
+    Some(total)
 }
 
 fn main() {
@@ -63,12 +76,12 @@ mod tests {
     #[test]
     fn test_part_one() {
         let input = advent_of_code::read_file("examples", 3);
-        assert_eq!(part_one(&input), None);
+        assert_eq!(part_one(&input), Some(157));
     }
 
     #[test]
     fn test_part_two() {
         let input = advent_of_code::read_file("examples", 3);
-        assert_eq!(part_two(&input), None);
+        assert_eq!(part_two(&input), Some(70));
     }
 }
