@@ -25,13 +25,11 @@ impl Stepper {
 
     fn step(&mut self) {
         self.window.remove(0);
-        self.window.push(self.string.chars().nth(self.index).unwrap());
+        self.window
+            .push(self.string.chars().nth(self.index).unwrap());
         self.index += 1;
     }
 }
-
-
-
 
 pub fn part_one(input: &str) -> Option<u32> {
     let mut stepper = Stepper::from(input, 4);
